@@ -43,6 +43,8 @@ export interface ScraperOptions {
   cacheDir?: string;
   /** Callback for when the bank requests an SMS OTP code */
   onOtpRequired?: () => Promise<string>;
+  /** Enable Stagehand action cache (default: false — bank pages change between sessions) */
+  enableCache?: boolean;
   /** Stagehand verbosity: 0=quiet, 1=normal, 2=debug (default: 0) */
   verbose?: 0 | 1 | 2;
 }

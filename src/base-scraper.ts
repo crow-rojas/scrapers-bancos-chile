@@ -56,7 +56,7 @@ export abstract class BaseScraper {
         apiKey: this.options.llmApiKey,
       },
       selfHeal: true,
-      cacheDir: this.options.cacheDir ?? ".stagehand-cache",
+      cacheDir: this.options.cacheDir,
       verbose: this.options.verbose ?? 0,
       localBrowserLaunchOptions: {
         headless: this.options.headless ?? false,
