@@ -49,6 +49,15 @@ export abstract class BaseScraper {
         ? "anthropic/claude-sonnet-4-20250514"
         : "openai/gpt-4.1-mini";
 
+    const headless = this.options.headless ?? false;
+
+    const args = [
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-extensions",
+      "--window-size=1280,720",
+    ];
+
     const stagehand = new Stagehand({
       env: "LOCAL",
       model: {
@@ -59,14 +68,23 @@ export abstract class BaseScraper {
       cacheDir: this.options.cacheDir,
       verbose: this.options.verbose ?? 0,
       localBrowserLaunchOptions: {
-        headless: this.options.headless ?? false,
-        args: [
-          "--window-position=-2400,-2400",  // off-screen so it doesn't steal focus
-          "--window-size=1280,720",
-        ],
+        headless,
+        args,
       },
     });
     await stagehand.init();
+
+    // Apply runtime stealth evasions to bypass anti-bot detection
+    const page = stagehand.context.pages()[0];
+    if (page) {
+      // addInitScript runs in the browser context, not Node — use string form to avoid TS DOM issues
+      await page.addInitScript(`
+        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+        Object.defineProperty(navigator, 'languages', { get: () => ['es-CL', 'es', 'en-US', 'en'] });
+        window.chrome = { runtime: {} };
+      `);
+    }
+
     return stagehand;
   }
 
