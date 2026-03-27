@@ -60,6 +60,10 @@ export abstract class BaseScraper {
       verbose: this.options.verbose ?? 0,
       localBrowserLaunchOptions: {
         headless: this.options.headless ?? false,
+        args: [
+          "--window-position=-2400,-2400",  // off-screen so it doesn't steal focus
+          "--window-size=1280,720",
+        ],
       },
     });
     await stagehand.init();
