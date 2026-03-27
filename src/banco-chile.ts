@@ -54,7 +54,8 @@ export class BancoChileScraper extends BaseScraper {
 
       // Step 1: Go directly to the login page (skips landing page, avoids cross-domain navigation issues)
       await page.goto("https://login.portales.bancochile.cl/login", { waitUntil: "networkidle" });
-      await page.waitForTimeout(3000);
+      // Wait for Angular login form to render (headless may be slower)
+      await page.waitForTimeout(5000);
 
       // Step 2: Login — use act() for reliability (the login form uses dynamic Angular rendering)
       await stagehand.act(
